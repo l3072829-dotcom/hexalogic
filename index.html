@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO & Social Sharing -->
+    <title>HexaLogic | 專業生命演算報告</title>
+    <meta name="description" content="結合梅花易數與子平八字的深度生命演算引擎，為您解碼生命座標。">
+    <meta property="og:title" content="HexaLogic 專業生命演算報告">
+    <meta property="og:description" content="Apple 級別美學，深度易經演算。">
+    <meta property="og:type" content="website">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;500;700&family=Noto+Sans+TC:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Urbanist', 'Noto Sans TC', sans-serif; background-color: #000; color: #fff; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .apple-glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gold-gradient { background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #b8860b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-gold { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2); filter: brightness(1.1); }
+        .report-card { opacity: 0; transform: translateY(40px); animation: slideUp 1.2s ease-out forwards; }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        .text-justify-custom { text-align: justify; text-justify: inter-character; }
+        select { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; color: white; cursor: pointer; outline: none; appearance: none; transition: border 0.3s; }
+        select:focus { border-color: #d4af37; }
+        .loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60% { content: '...'; } 80%, 100% { content: ''; } }
+        /* 隱藏滾動條但保持功能 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    </style>
+</head>
+<body class="p-6 md:p-12 min-h-screen selection:bg-[#d4af37] selection:text-black">
+
+    <nav class="flex justify-between items-center mb-32 max-w-7xl mx-auto w-full">
+        <div class="text-2xl font-bold tracking-tighter italic">HEXALOGIC <span class="text-[10px] align-top text-gray-600">ULTIMATE</span></div>
+        <div class="hidden md:flex gap-12 text-[10px] uppercase tracking-[0.4em] text-gray-500 font-medium">
+            <a href="#" class="hover:text-[#d4af37] transition-all">核心技術</a>
+            <a href="#" class="hover:text-[#d4af37] transition-all">易學矩陣</a>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto w-full">
+        <section id="input-section">
+            <h1 class="text-7xl md:text-[110px] font-bold mb-12 tracking-tighter leading-[0.85]">深度。<br><span class="gold-gradient">生命演算。</span></h1>
+            <p class="text-gray-400 text-xl md:text-2xl mb-24 max-w-3xl font-light leading-relaxed">這不只是預測，這是對生命代碼的徹底解構。系統將根據《梅花易數》與《子平八字》深度義理，為您生成專屬的分析報告。</p>
+            
+            <div class="apple-glass p-10 md:p-20 rounded-[64px]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.4em] text-gray-600 mb-8 font-bold">出生日期 / BIRTH DATA</label>
+                        <div class="flex gap-4">
+                            <select id="year" class="flex-1"></select>
+                            <select id="month" class="w-28"></select>
+                            <select id="day" class="w-28"></select>
+                        </div>
+                    </div>
+                    <div id="time-container">
+                        <label class="block text-[10px] uppercase tracking-[0.4em] text-gray-600 mb-8 font-bold">精確時辰 / PRECISION</label>
+                        <div class="flex gap-4 items-center">
+                            <select id="hour" class="flex-1"></select>
+                            <span class="text-gray-800 font-bold">:</span>
+                            <select id="minute" class="flex-1"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-16 flex items-center gap-6 bg-white/[0.01] p-8 rounded-[32px] border border-white/5">
+                    <input type="checkbox" id="unknown-time" class="w-6 h-6 rounded-full accent-[#d4af37] cursor-pointer">
+                    <label for="unknown-time" class="text-sm text-gray-500 cursor-pointer font-light">我不確定時辰 (系統將自動執行年月日起卦法)</label>
+                </div>
+
+                <button id="run-btn" onclick="runAnalysis()" class="w-full mt-16 btn-gold text-black font-bold py-8 rounded-[32px] text-xl tracking-[0.3em] uppercase">
+                    啟動深度演算
+                </button>
+            </div>
+        </section>
+
+        <section id="result-section" class="hidden space-y-24 pb-60">
+            <div class="text-center">
+                <p id="user-identity" class="text-[#d4af37] tracking-[0.6em] uppercase text-xs font-bold mb-4"></p>
+                <h2 class="text-6xl font-bold tracking-tighter">深度生命報告書</h2>
+            </div>
+            
+            <div id="report-grid" class="space-y-20"></div>
+
+            <div class="text-center pt-20">
+                <button onclick="location.reload()" class="text-gray-600 hover:text-white underline tracking-widest text-sm uppercase">重新測試 (RE-ANALYZE)</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- 初始化選單 ---
+        const yS = document.getElementById('year');
+        const mS = document.getElementById('month');
+        const dS = document.getElementById('day');
+        const hS = document.getElementById('hour');
+        const nS = document.getElementById('minute');
+
+        for(let i=new Date().getFullYear(); i>=1940; i--) yS.add(new Option(i, i));
+        for(let i=1; i<=12; i++) mS.add(new Option(i < 10 ? '0'+i : i, i));
+        for(let i=1; i<=31; i++) dS.add(new Option(i < 10 ? '0'+i : i, i));
+        for(let i=0; i<=23; i++) hS.add(new Option(i < 10 ? '0'+i : i, i));
+        for(let i=0; i<=55; i+=5) nS.add(new Option(i < 10 ? '0'+i : i, i));
+
+        // 預設為使用者體驗最佳日期
+        yS.value = 2000; mS.value = 4; dS.value = 5;
+
+        const dmDB = {
+            "甲": { name: "甲木", trait: "參天大樹", element: "木", focus: "領導、開創、正直" },
+            "乙": { name: "乙木", trait: "蔓藤花草", element: "木", focus: "柔韌、溝通、適應" },
+            "丙": { name: "丙火", trait: "熾熱太陽", element: "火", focus: "傳播、熱情、光明" },
+            "丁": { name: "丁火", trait: "人間燈火", element: "火", focus: "文明、溫暖、內斂" },
+            "戊": { name: "戊土", trait: "廣闊大地", element: "土", focus: "穩定、包容、信用" },
+            "己": { name: "己土", trait: "田園濕土", element: "土", focus: "轉化、細膩、孕育" },
+            "庚": { name: "庚金", trait: "剛毅利劍", element: "金", focus: "邏輯、決斷、正義" },
+            "辛": { name: "辛金", trait: "精美珠寶", element: "金", focus: "審美、獨特、細緻" },
+            "壬": { name: "壬水", trait: "奔騰江河", element: "水", focus: "智慧、流動、宏觀" },
+            "癸": { name: "癸水", trait: "雨露溪泉", element: "水", focus: "直覺、觀察、靈感" }
+        };
+
+        const guaDB = {
+            "乾": { name: "乾為天", essence: "剛健中正", element: "金", keyword: "權力" },
+            "坤": { name: "坤為地", essence: "柔順厚德", element: "土", keyword: "載體" },
+            "震": { name: "震為雷", essence: "驚動萬里", element: "木", keyword: "突變" },
+            "巽": { name: "巽為風", essence: "深入無孔", element: "木", keyword: "影響" },
+            "坎": { name: "坎為水", essence: "重險智慧", element: "水", keyword: "洞察" },
+            "離": { name: "離為火", essence: "文明依附", element: "火", keyword: "視覺" },
+            "艮": { name: "艮為山", essence: "止步沉澱", element: "土", keyword: "專業" },
+            "兌": { name: "兌為澤", essence: "喜悅表達", element: "金", keyword: "溝通" }
+        };
+
+        function getDayMaster(y, m, d) {
+            const baseDate = new Date(2000, 0, 1);
+            const targetDate = new Date(y, m - 1, d);
+            const diffDays = Math.floor((targetDate - baseDate) / (1000 * 60 * 60 * 24));
+            const gan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+            let idx = (diffDays % 10);
+            if (idx < 0) idx += 10;
+            return dmDB[gan[idx]];
+        }
+
+        function generateDynamicContent(section, gua, dm) {
+            const up = gua.up; const down = gua.down;
+            const fullGuaName = up.name === down.name ? up.name : up.name + down.name;
+            
+            const templates = {
+                "先天命元 (CORE ESSENCE)": [
+                    `您的生命座標鎖定在【${fullGuaName}】。作為「${dm.name} (${dm.trait})」的日主，您的存在具備極強的${dm.focus}特質。在易學網的深度詮釋中，${up.name}在上代表您的天時趨勢，${down.name}在下代表您的地利根基。這意味著您的靈魂是一個「${up.essence}」與「${down.essence}」的綜合體。`,
+                    `這種組合暗示您的一生將圍繞「${up.keyword}」與「${dm.focus}」展開。不同於一般的命格，您的能量場具備高度的轉化效率。這就像是一顆${dm.trait}在${up.name}的天氣下生長，需要精確的節奏掌控。懂易經的人會發現，您的成功不在於速度，而在於「位」。當您找到屬於自己的座標時，您的影響力會如同${up.name}般擴散。`,
+                    `總結來說，您的先天命格是一場關於「深度自洽」的修行。當您學會利用下卦的「${down.essence}」來穩固內心，同時擁抱上卦的「${up.keyword}」時，您的生命將迎來真正的覺醒。`
+                ],
+                "天賦出口 (LOGIC & TALENT)": [
+                    `您的才華出口在命盤中呈現為「${dm.element === '木' ? '火' : (dm.element === '火' ? '土' : (dm.element === '土' ? '金' : '木'))}」的能量流向。在【${fullGuaName}】卦的加持下，您的邏輯不再是線性的，而是矩陣式的。您的${dm.focus}性格讓您在處理複雜資訊時，能展現出如同${up.name}般的穿透力。`,
+                    `具體而言，您擅長在混亂中建立秩序。這份天賦在當前數位文明時代極度稀缺。您不需要刻意去競爭，因為您的「${down.keyword}」沉澱足以讓您在專業領域中立於不敗之地。您的才華是用來「解決難題」的，而非僅僅是為了生計。當您專注於${up.keyword}的構建時，您的社會價值將會成倍增長。`
+                ],
+                "2026 關鍵預測 (THE NEXUS)": [
+                    `進入 2026 丙午年，火旺之氣將全面衝擊您的【${fullGuaName}】卦。對於${dm.name}人來說，這是一年「熔煉與重生」。丙火的炙熱會挑戰您的${dm.focus}定力。如果您能保持${down.essence}的穩健，這股火氣將化為您晉升的動能；反之，若過於焦躁，則易在火中迷失。`,
+                    `這一年是您「見龍在田」的關鍵。火能生土（如果您是土命）或冶煉金（如果您是金命），代表資源的整合進入了最後階段。請務必關注下半年，隨著金水之氣的回升，您在 2026 年上半年播下的種子將會結出「${up.keyword}」的果實。這是一場智慧與耐性的終極博弈。`
+                ]
+            };
+            return templates[section].join("<br><br>");
+        }
+
+        function runAnalysis() {
+            const btn = document.getElementById('run-btn');
+            btn.innerHTML = '正在解構時空代碼 <span class="loading-dots"></span>';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const y = parseInt(yS.value);
+                const m = parseInt(mS.value);
+                const d = parseInt(dS.value);
+                const isU = document.getElementById('unknown-time').checked;
+                const h = isU ? 12 : parseInt(hS.value);
+
+                const dm = getDayMaster(y, m, d);
+                const yearZhi = ((y - 1900) % 12) + 1;
+                const upIdx = (yearZhi + m + d) % 8;
+                const downIdx = (yearZhi + m + d + h) % 8;
+                const guaNames = ["坤", "震", "離", "兌", "乾", "巽", "坎", "艮"];
+                const upGua = guaDB[guaNames[upIdx]];
+                const downGua = guaDB[guaNames[downIdx]];
+
+                document.getElementById('input-section').classList.add('hidden');
+                document.getElementById('result-section').classList.remove('hidden');
+                document.getElementById('user-identity').innerText = `命盤鎖定：${dm.name} (${dm.trait}) | 卦象：${upGua.name}${downGua.name}`;
+
+                const grid = document.getElementById('report-grid');
+                grid.innerHTML = '';
+
+                ["先天命元 (CORE ESSENCE)", "天賦出口 (LOGIC & TALENT)", "2026 關鍵預測 (THE NEXUS)"].forEach((title, idx) => {
+                    grid.innerHTML += `
+                        <div class="report-card apple-glass p-12 md:p-20 rounded-[56px] border border-white/5" style="animation-delay: ${idx * 0.3}s">
+                            <div class="flex items-center gap-4 mb-12">
+                                <span class="text-[#d4af37] text-xs font-bold tracking-[0.5em] uppercase">${title}</span>
+                                <div class="h-[1px] flex-1 bg-white/10"></div>
+                            </div>
+                            <div class="text-gray-400 text-lg md:text-xl leading-relaxed font-light text-justify-custom">
+                                ${generateDynamicContent(title, {up: upGua, down: downGua}, dm)}
+                            </div>
+                        </div>
+                    `;
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1800);
+        }
+    </script>
+</body>
+</html>
