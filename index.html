@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- SEO & Social Sharing -->
     <title>HexaLogic | 專業生命演算報告</title>
     <meta name="description" content="結合梅花易數與子平八字的深度生命演算引擎，為您解碼生命座標。">
@@ -16,52 +16,97 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: 'Urbanist', 'Noto Sans TC', sans-serif; background-color: #000; color: #fff; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-        .apple-glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .gold-gradient { background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #b8860b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .btn-gold { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        :root { --accent-gold: #d4af37; }
+        * { -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Urbanist', 'Noto Sans TC', sans-serif; 
+            background-color: #000; 
+            color: #fff; 
+            -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden; 
+            width: 100%;
+        }
+        .apple-glass { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(40px); 
+            -webkit-backdrop-filter: blur(40px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+        .gold-gradient { 
+            background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #b8860b 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        .btn-gold { 
+            background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); 
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
+        }
         .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2); filter: brightness(1.1); }
+        .btn-gold:active { transform: scale(0.98); }
+
         .report-card { opacity: 0; transform: translateY(40px); animation: slideUp 1.2s ease-out forwards; }
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        
         .text-justify-custom { text-align: justify; text-justify: inter-character; }
-        select { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; color: white; cursor: pointer; outline: none; appearance: none; transition: border 0.3s; }
-        select:focus { border-color: #d4af37; }
+        
+        select { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 16px; 
+            padding: 16px; 
+            color: white; 
+            cursor: pointer; 
+            outline: none; 
+            appearance: none; 
+            transition: border 0.3s; 
+            font-size: 16px; /* 防止 iOS 點擊時自動放大螢幕 */
+            width: 100%;
+        }
+        select:focus { border-color: var(--accent-gold); }
+        
         .loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
         @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60% { content: '...'; } 80%, 100% { content: ''; } }
+        
         /* 隱藏滾動條但保持功能 */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        /* 行動端適配微調 */
+        @media (max-width: 768px) {
+            .report-card { padding: 2rem !important; border-radius: 32px !important; }
+            h1 { line-height: 1.1 !important; }
+        }
     </style>
 </head>
-<body class="p-6 md:p-12 min-h-screen selection:bg-[#d4af37] selection:text-black">
+<body class="px-5 py-8 md:p-12 min-h-screen selection:bg-[#d4af37] selection:text-black">
 
-    <nav class="flex justify-between items-center mb-32 max-w-7xl mx-auto w-full">
-        <div class="text-2xl font-bold tracking-tighter italic">HEXALOGIC <span class="text-[10px] align-top text-gray-600">ULTIMATE</span></div>
-        <div class="hidden md:flex gap-12 text-[10px] uppercase tracking-[0.4em] text-gray-500 font-medium">
-            <a href="#" class="hover:text-[#d4af37] transition-all">核心技術</a>
-            <a href="#" class="hover:text-[#d4af37] transition-all">易學矩陣</a>
+    <nav class="flex justify-between items-center mb-16 md:mb-32 max-w-7xl mx-auto w-full">
+        <div class="text-xl md:text-2xl font-bold tracking-tighter italic">HEXALOGIC <span class="text-[9px] md:text-[10px] align-top text-gray-600">ULTIMATE</span></div>
+        <div class="flex gap-6 md:gap-12 text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] text-gray-500 font-medium">
+            <a href="#" class="hover:text-[#d4af37] transition-all">技術</a>
+            <a href="#" class="hover:text-[#d4af37] transition-all">矩陣</a>
         </div>
     </nav>
 
     <main class="max-w-5xl mx-auto w-full">
         <section id="input-section">
-            <h1 class="text-7xl md:text-[110px] font-bold mb-12 tracking-tighter leading-[0.85]">深度。<br><span class="gold-gradient">生命演算。</span></h1>
-            <p class="text-gray-400 text-xl md:text-2xl mb-24 max-w-3xl font-light leading-relaxed">這不只是預測，這是對生命代碼的徹底解構。系統將根據《梅花易數》與《子平八字》深度義理，為您生成專屬的分析報告。</p>
+            <h1 class="text-5xl md:text-[110px] font-bold mb-8 md:mb-12 tracking-tighter leading-[0.85]">深度。<br><span class="gold-gradient">生命演算。</span></h1>
+            <p class="text-gray-400 text-lg md:text-2xl mb-12 md:mb-24 max-w-3xl font-light leading-relaxed">這不只是預測，這是對生命代碼的徹底解構。系統將根據《梅花易數》與《子平八字》深度義理，為您生成專屬的分析報告。</p>
             
-            <div class="apple-glass p-10 md:p-20 rounded-[64px]">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div class="apple-glass p-8 md:p-20 rounded-[40px] md:rounded-[64px]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.4em] text-gray-600 mb-8 font-bold">出生日期 / BIRTH DATA</label>
-                        <div class="flex gap-4">
-                            <select id="year" class="flex-1"></select>
-                            <select id="month" class="w-28"></select>
-                            <select id="day" class="w-28"></select>
+                        <label class="block text-[10px] uppercase tracking-[0.4em] text-gray-600 mb-6 md:mb-8 font-bold">出生日期 / BIRTH DATA</label>
+                        <div class="flex gap-3">
+                            <select id="year" class="flex-[2]"></select>
+                            <select id="month" class="flex-1 md:w-28"></select>
+                            <select id="day" class="flex-1 md:w-28"></select>
                         </div>
                     </div>
                     <div id="time-container">
-                        <label class="block text-[10px] uppercase tracking-[0.4em] text-gray-600 mb-8 font-bold">精確時辰 / PRECISION</label>
-                        <div class="flex gap-4 items-center">
+                        <label class="block text-[10px] uppercase tracking-[0.4em] text-gray-600 mb-6 md:mb-8 font-bold">精確時辰 / PRECISION</label>
+                        <div class="flex gap-3 items-center">
                             <select id="hour" class="flex-1"></select>
                             <span class="text-gray-800 font-bold">:</span>
                             <select id="minute" class="flex-1"></select>
@@ -69,27 +114,27 @@
                     </div>
                 </div>
 
-                <div class="mt-16 flex items-center gap-6 bg-white/[0.01] p-8 rounded-[32px] border border-white/5">
-                    <input type="checkbox" id="unknown-time" class="w-6 h-6 rounded-full accent-[#d4af37] cursor-pointer">
-                    <label for="unknown-time" class="text-sm text-gray-500 cursor-pointer font-light">我不確定時辰 (系統將自動執行年月日起卦法)</label>
+                <div class="mt-10 md:mt-16 flex items-start md:items-center gap-4 md:gap-6 bg-white/[0.01] p-6 md:p-8 rounded-[24px] md:rounded-[32px] border border-white/5">
+                    <input type="checkbox" id="unknown-time" class="w-5 h-5 md:w-6 md:h-6 rounded-full accent-[#d4af37] cursor-pointer mt-1 md:mt-0">
+                    <label for="unknown-time" class="text-sm text-gray-500 cursor-pointer font-light leading-tight">我不確定時辰 (系統將自動執行年月日起卦法)</label>
                 </div>
 
-                <button id="run-btn" onclick="runAnalysis()" class="w-full mt-16 btn-gold text-black font-bold py-8 rounded-[32px] text-xl tracking-[0.3em] uppercase">
+                <button id="run-btn" onclick="runAnalysis()" class="w-full mt-10 md:mt-16 btn-gold text-black font-bold py-6 md:py-8 rounded-[24px] md:rounded-[32px] text-lg md:text-xl tracking-[0.3em] uppercase">
                     啟動深度演算
                 </button>
             </div>
         </section>
 
-        <section id="result-section" class="hidden space-y-24 pb-60">
-            <div class="text-center">
-                <p id="user-identity" class="text-[#d4af37] tracking-[0.6em] uppercase text-xs font-bold mb-4"></p>
-                <h2 class="text-6xl font-bold tracking-tighter">深度生命報告書</h2>
+        <section id="result-section" class="hidden space-y-16 md:space-y-24 pb-40 md:pb-60">
+            <div class="text-center px-4">
+                <p id="user-identity" class="text-[#d4af37] tracking-[0.4em] md:tracking-[0.6em] uppercase text-[10px] md:text-xs font-bold mb-4"></p>
+                <h2 class="text-4xl md:text-6xl font-bold tracking-tighter">深度生命報告書</h2>
             </div>
             
-            <div id="report-grid" class="space-y-20"></div>
+            <div id="report-grid" class="space-y-12 md:space-y-20"></div>
 
-            <div class="text-center pt-20">
-                <button onclick="location.reload()" class="text-gray-600 hover:text-white underline tracking-widest text-sm uppercase">重新測試 (RE-ANALYZE)</button>
+            <div class="text-center pt-10 md:pt-20">
+                <button onclick="location.reload()" class="text-gray-600 hover:text-white underline tracking-widest text-xs md:text-sm uppercase">重新測試 (RE-ANALYZE)</button>
             </div>
         </section>
     </main>
@@ -102,14 +147,22 @@
         const hS = document.getElementById('hour');
         const nS = document.getElementById('minute');
 
-        for(let i=new Date().getFullYear(); i>=1940; i--) yS.add(new Option(i, i));
+        const now = new Date();
+        const currentYear = now.getFullYear();
+
+        // 生成選項
+        for(let i=currentYear; i>=1940; i--) yS.add(new Option(i, i));
         for(let i=1; i<=12; i++) mS.add(new Option(i < 10 ? '0'+i : i, i));
         for(let i=1; i<=31; i++) dS.add(new Option(i < 10 ? '0'+i : i, i));
         for(let i=0; i<=23; i++) hS.add(new Option(i < 10 ? '0'+i : i, i));
         for(let i=0; i<=55; i+=5) nS.add(new Option(i < 10 ? '0'+i : i, i));
 
-        // 預設為使用者體驗最佳日期
-        yS.value = 2000; mS.value = 4; dS.value = 5;
+        // 預設為今天，而非固定生日
+        yS.value = currentYear;
+        mS.value = now.getMonth() + 1;
+        dS.value = now.getDate();
+        hS.value = now.getHours();
+        nS.value = Math.floor(now.getMinutes() / 5) * 5;
 
         const dmDB = {
             "甲": { name: "甲木", trait: "參天大樹", element: "木", focus: "領導、開創、正直" },
@@ -196,12 +249,12 @@
 
                 ["先天命元 (CORE ESSENCE)", "天賦出口 (LOGIC & TALENT)", "2026 關鍵預測 (THE NEXUS)"].forEach((title, idx) => {
                     grid.innerHTML += `
-                        <div class="report-card apple-glass p-12 md:p-20 rounded-[56px] border border-white/5" style="animation-delay: ${idx * 0.3}s">
-                            <div class="flex items-center gap-4 mb-12">
-                                <span class="text-[#d4af37] text-xs font-bold tracking-[0.5em] uppercase">${title}</span>
+                        <div class="report-card apple-glass p-8 md:p-20 rounded-[32px] md:rounded-[56px] border border-white/5" style="animation-delay: ${idx * 0.3}s">
+                            <div class="flex items-center gap-4 mb-8 md:mb-12">
+                                <span class="text-[#d4af37] text-[10px] md:text-xs font-bold tracking-[0.5em] uppercase">${title}</span>
                                 <div class="h-[1px] flex-1 bg-white/10"></div>
                             </div>
-                            <div class="text-gray-400 text-lg md:text-xl leading-relaxed font-light text-justify-custom">
+                            <div class="text-gray-400 text-base md:text-xl leading-relaxed font-light text-justify-custom">
                                 ${generateDynamicContent(title, {up: upGua, down: downGua}, dm)}
                             </div>
                         </div>
